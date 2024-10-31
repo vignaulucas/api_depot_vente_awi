@@ -11,6 +11,12 @@ module.exports = app => {
 
   router.get('/users', isLoggedIn, isAdmin, controller.getAll);
 
+  router.get('/sellers', isLoggedIn, isAdmin, controller.getSellers);
+
+  router.get('/managersAndAdmins', isLoggedIn, isAdmin, controller.getManagersAndAdmins);
+
+  router.get('/managerRequests', isLoggedIn, isAdmin, controller.getAspiringManagers);
+
   router.get('/:id', isLoggedIn, controller.getById);
 
   router.get('/:id/details', isLoggedIn, isAdmin, controller.getUserDetails);
@@ -31,6 +37,10 @@ module.exports = app => {
 
   router.patch('/:id/role', isLoggedIn, isAdmin, controller.toggleRole);
 
+  router.patch('/:id/manager', isLoggedIn, isAdmin, controller.updateUserRoleToManager);
+
+  router.patch('/:id/deleteManagerRequest', isLoggedIn, isAdmin, controller.deleteAspiringManager);
+
   router.patch('/:id/email', isLoggedIn, isAdmin, controller.updateEmail);
 
   router.patch('/:id/lastName', isLoggedIn, isAdmin, controller.updateLastName);
@@ -44,7 +54,6 @@ module.exports = app => {
   router.patch('/:id/password', isLoggedIn, isAdmin, controller.updatePassword);
 
   router.patch('/password', isLoggedIn, controller.verifyCurrentPassword);
-
 
   router.delete('/:id', isLoggedIn, isAdmin, controller.deleteUser);
 

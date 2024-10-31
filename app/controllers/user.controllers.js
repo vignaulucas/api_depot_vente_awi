@@ -36,6 +36,44 @@ const getAll = async (req, res) => {
   }
 };
 
+const getSellers = async (req, res) => {
+    try {
+      const users = await User.findAll({
+        where: { role: 'seller' } 
+      });
+      res.send(users);
+    } catch (error) {
+      res.status(500).send({ message: 'Erreur lors de la récupération des vendeurs' });
+    }
+};
+
+
+const getManagersAndAdmins = async (req, res) => {
+    try {
+        const users = await User.findAll({
+            where: {
+                role: ['manager', 'admin']
+            }
+        });
+        res.send(users);
+    } catch (error) {
+        res.status(500).send({ message: 'Erreur lors de la récupération des administrateurs' });
+    }
+};
+
+const getAspiringManagers = async (req,res) => {
+    try {
+        const users = await User.findAll({
+            where: {
+                aspiringManager: true 
+            }
+        });
+        res.send(users);
+    } catch (error) {
+        res.status(500).send({ message: 'Erreur lors de la récupération des utilisateurs souhaitant devenir gestionnaire' });
+    }
+}
+
 const updateAdresse = async (req, res) => {
   const { id } = req.params;
   const { adresse } = req.body;
@@ -182,6 +220,45 @@ const toggleRole = async (req, res) => {
   }
 };
 
+const updateUserRoleToManager = async (req, res) => {
+    try {
+        const { id } = req.params; 
+
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).send({ message: 'Utilisateur non trouvé' });
+        }
+
+        user.role = 'manager';
+        user.aspiringManager = false;
+        await user.save();
+
+        res.send({ message: 'Rôle de l\'utilisateur mis à jour avec succès', user });
+    } catch (error) {
+        res.status(500).send({ message: 'Erreur lors de la mise à jour du rôle de l\'utilisateur' });
+    }
+};
+
+const deleteAspiringManager = async (req, res) => {
+    try {
+        const { id } = req.params; 
+
+        const user = await User.findByPk(id);
+        if (!user) {
+            return res.status(404).send({ message: 'Utilisateur non trouvé' });
+        }
+
+        user.aspiringManager = false;
+        await user.save();
+
+        res.send({ message: 'Demande de l\'utilisateur mis à jour avec succès', user });
+    } catch (error) {
+        res.status(500).send({ message: 'Erreur lors de la mise à jour de la demande de l\'utilisateur' });
+    }
+};
+
+
+
 const getUserDetails = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id, {
@@ -266,7 +343,7 @@ const create = async (req, res) => {
     const lastNameRegex = /^[a-zA-Z\s]+$/;
 
     // Validation des champs
-    if (!postalCodeRegex.test(req.body.postalCode)) errors.push('Invalid postal code');
+    if (req.body.postalCode && !postalCodeRegex.test(req.body.postalCode)) errors.push('Invalid postal code');
     if (!telephoneRegex.test(req.body.telephone)) errors.push('Invalid phone number format');
     if (!firstNameRegex.test(req.body.firstName)) errors.push('Invalid first name format');
     if (!lastNameRegex.test(req.body.lastName)) errors.push('Invalid last name format');
@@ -292,6 +369,7 @@ const create = async (req, res) => {
       ville: req.body.ville,
       postalCode: req.body.postalCode,
       adresse: req.body.adresse,
+      aspiringManager: req.body.aspiringManager,
     });
 
     const token = jwt.sign({ id: user.idUser, admin: user.role === 'admin' }, process.env.JWT_SECRET, { expiresIn: '24h' });
@@ -434,4 +512,4 @@ const verifyCurrentPassword = async (req, res) => {
   }
 };
 
-module.exports = { getMe, getById, updatePassword, verifyCurrentPassword, getAll, deleteUser, toggleRole, getUserDetails, create, login, forgotPassword, resetPassword, updateAdresse, updateEmail, updateFirstName, updateLastName, updatePostalCode, updateTelephone, updateVille };
+module.exports = { getMe, getById, updatePassword, verifyCurrentPassword, getAll, getSellers, getManagersAndAdmins, getAspiringManagers, deleteUser, toggleRole, updateUserRoleToManager, deleteAspiringManager, getUserDetails, create, login, forgotPassword, resetPassword, updateAdresse, updateEmail, updateFirstName, updateLastName, updatePostalCode, updateTelephone, updateVille };

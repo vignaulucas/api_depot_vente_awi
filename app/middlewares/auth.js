@@ -13,7 +13,6 @@ const isLoggedIn = async (req, res, next) => {
       },
     });
     if (!user) throw new Error('Token invalid');
-    if (!user.active) throw new Error('User desactivated');
     req.user = user;
     next();
   } catch (error) {
