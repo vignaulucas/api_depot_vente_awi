@@ -29,6 +29,7 @@ app.get('/', function (req, res) {
 });
 
 require('./app/routes/user.routes')(app);
+require('./app/routes/saleSession.routes')(app);
 
 
 const port = process.env.PORT || 8082;
