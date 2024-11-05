@@ -1,5 +1,6 @@
 const { SaleSession } = require('../models');
 const { Op } = require('sequelize');
+const Sequelize = require('sequelize');
 
 // Récupérer toutes les sessions de vente
 const getAllSessions = async (req, res) => {
@@ -32,13 +33,20 @@ const getActiveSession = async (req, res) => {
             }
         });
 
-        if (!session) return res.status(404).send({ message: "Aucune session active actuellement" });
+        if (!session) {
+            return res.status(404).send({ message: "Aucune session active actuellement" });
+        }
 
-        res.send(session);
+        res.send({
+            status: "active",
+            session: session.dataValues
+        });
     } catch (error) {
+        console.error("Erreur dans getActiveSession:", error);
         res.status(500).send({ message: "Erreur lors de la récupération de la session active", error: error.message });
     }
 };
+
 
 // Créer une nouvelle session de vente
 const createSession = async (req, res) => {

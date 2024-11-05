@@ -30,6 +30,8 @@ app.get('/', function (req, res) {
 
 require('./app/routes/user.routes')(app);
 require('./app/routes/saleSession.routes')(app);
+require('./app/routes/game.routes')(app);
+require('./app/routes/temporarySeller.routes')(app);
 
 
 const port = process.env.PORT || 8082;

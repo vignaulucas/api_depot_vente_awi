@@ -26,7 +26,7 @@ const isAdmin = (req, res, next) => {
 }
 
 const isGestionnaire = (req, res, next) => {
-    if (req.user.role === 'gestionnaire') return next();
+    if (req.user.role === 'gestionnaire' || req.user.role === 'admin') return next();
     res.status(401).send({ errors: 'Not Gestionnaire' })
   }
 
