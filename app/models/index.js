@@ -60,10 +60,14 @@ db.sequelize = sequelize;
 
 db.users = require('./user.model')(sequelize, Sequelize);
 db.saleSession = require('./saleSession.model')(sequelize, Sequelize);
+db.temporarySeller = require('./temporarySeller.model')(sequelize, Sequelize);
+db.game = require('./game.model')(sequelize, Sequelize);
 
 
 module.exports = {
   db,
   User: db.users,
   SaleSession: db.saleSession,
+  Game: db.game,
+  TemporarySeller: db.temporarySeller,
 };

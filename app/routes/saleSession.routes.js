@@ -6,8 +6,8 @@ module.exports = app => {
 
   // Routes GET
   router.get('/sessions', isLoggedIn, isAdmin, controller.getAllSessions);
-  router.get('/:id', controller.getSessionById);
   router.get('/activeSession', controller.getActiveSession);
+  router.get('/:id', controller.getSessionById);
 
   // Routes POST
   router.post('/', isLoggedIn, isAdmin, controller.createSession);
