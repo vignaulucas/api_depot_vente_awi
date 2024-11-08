@@ -33,6 +33,7 @@ require('./app/routes/saleSession.routes')(app);
 require('./app/routes/game.routes')(app);
 require('./app/routes/temporarySeller.routes')(app);
 require('./app/routes/fileCsv.routes')(app);
+require('./app/routes/wishlist.routes')(app);
 
 
 const port = process.env.PORT || 8082;
