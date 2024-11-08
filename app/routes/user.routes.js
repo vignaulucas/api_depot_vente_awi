@@ -17,7 +17,7 @@ module.exports = app => {
 
   router.get('/managerRequests', isLoggedIn, isAdmin, controller.getAspiringManagers);
 
-  router.get('/:id', isLoggedIn, controller.getById);
+  router.get('/:id', controller.getById);
 
   router.get('/:id/details', isLoggedIn, isAdmin, controller.getUserDetails);
 
