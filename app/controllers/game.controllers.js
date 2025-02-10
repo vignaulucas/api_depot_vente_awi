@@ -75,6 +75,28 @@ const updateGame = async (req, res) => {
     }
 };
 
+const purchaseGame = async (req, res) => {
+    const { gameId } = req.body;
+
+    if (!gameId) {
+        return res.status(400).send({ message: "L'ID du jeu est requis pour finaliser l'achat." });
+    }
+
+    try {
+        const game = await Game.findByPk(gameId);
+        if (!game) {
+            return res.status(404).send({ message: "Jeu introuvable." });
+        }
+
+        await game.update({ status: 'vendu' });
+
+        res.status(200).send({ message: "Le jeu a été marqué comme vendu avec succès.", game });
+    } catch (error) {
+        console.error("Erreur lors de la finalisation de l'achat du jeu:", error);
+        res.status(500).send({ message: "Erreur lors de la finalisation de l'achat du jeu.", error: error.message });
+    }
+};
+
 // Supprimer un jeu
 const deleteGame = async (req, res) => {
     const { id } = req.params;
@@ -192,4 +214,5 @@ module.exports = {
     getAllDepositGames,
     getAllForSaleGames,
     sellGame,
+    purchaseGame,
 };

@@ -17,6 +17,7 @@ module.exports = app => {
 
     // Routes PATCH
     router.patch('/games/:id', isLoggedIn, isGestionnaire, controller.updateGame); 
+    router.patch('/purchaseGame/:id', isLoggedIn, isGestionnaire, controller.purchaseGame);
 
     // Routes DELETE
     router.delete('/games/:id', isLoggedIn, isGestionnaire, controller.deleteGame); 

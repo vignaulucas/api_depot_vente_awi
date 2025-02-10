@@ -32,8 +32,13 @@ require('./app/routes/user.routes')(app);
 require('./app/routes/saleSession.routes')(app);
 require('./app/routes/game.routes')(app);
 require('./app/routes/temporarySeller.routes')(app);
+require('./app/routes/temporaryBuyer.routes')(app);
 require('./app/routes/fileCsv.routes')(app);
 require('./app/routes/wishlist.routes')(app);
+require('./app/routes/transaction.routes')(app);
+require('./app/routes/particularFinancialSummary.routes')(app);
+require('./app/routes/globalFinancialSummary.routes')(app);
+require('./app/routes/transaction.routes')(app);
 
 
 const port = process.env.PORT || 8082;
