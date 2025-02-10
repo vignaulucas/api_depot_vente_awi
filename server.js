@@ -9,6 +9,7 @@ const init = require('./init');
 
 const allowedOrigins = [
   'http://localhost:3000',
+  'https://front-depot-vente-awi.onrender.com',
 ];
 
 app.use(cors({
