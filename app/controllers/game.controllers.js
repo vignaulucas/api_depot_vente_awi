@@ -177,6 +177,29 @@ const getAllForSaleGames = async (req, res) => {
     }
 };
 
+// Récupérer tous les jeux vendu d'une session active
+const getAllSaleGames = async (req, res) => {
+    const { saleSessionId } = req.params;
+
+    try {
+        const games = await Game.findAll({
+            where: { 
+                saleSessionId: saleSessionId, 
+                status: 'vendu'
+            },
+        });
+
+        if (!games || games.length === 0) {
+            return res.status(404).send({ message: 'Aucun jeu en vente trouvé pour cette session active.' });
+        }
+        res.send(games);
+
+    } catch (error) {
+        console.error('Erreur lors de la récupération des jeux en vente:', error);
+        res.status(500).send({ message: 'Erreur lors de la récupération des jeux en vente', error: error.message });
+    }
+};
+
 // Contrôleur pour vendre un jeu
 const sellGame = async (req, res) => {
     const { gameId } = req.body;
@@ -232,6 +255,56 @@ const getTotalDepositFeesBySession = async (req, res) => {
     }
 };
 
+const getAllForSaleGamesForIdUser = async (req, res) => {
+    const { saleSessionId, idUser } = req.params;
+
+    try {
+        const games = await Game.findAll({
+            where: { 
+                userId : idUser,
+                saleSessionId: saleSessionId, 
+                status: {
+                    [Op.or]: ['en vente', 'depot', 'vendu','retiré']
+                }
+            },
+        });
+
+        if (!games || games.length === 0) {
+            return res.status(404).send({ message: 'Aucun jeu en vente trouvé pour cette session active.' });
+        }
+        res.send(games);
+        console.log(games)
+    } catch (error) {
+        console.error('Erreur lors de la récupération des jeux en vente:', error);
+        res.status(500).send({ message: 'Erreur lors de la récupération des jeux en vente', error: error.message });
+    }
+};
+
+const getAllForSaleGamesForNonUser = async (req, res) => {
+    const { saleSessionId, idUser } = req.params;
+
+    try {
+        const games = await Game.findAll({
+            where: { 
+                sellerId : idUser,
+                saleSessionId: saleSessionId, 
+                status: {
+                    [Op.or]: ['en vente', 'depot', 'vendu', 'retiré']
+                }
+            },
+        });
+
+        if (!games || games.length === 0) {
+            return res.status(404).send({ message: 'Aucun jeu en vente trouvé pour cette session active.' });
+        }
+        res.send(games);
+        console.log(games)
+    } catch (error) {
+        console.error('Erreur lors de la récupération des jeux en vente:', error);
+        res.status(500).send({ message: 'Erreur lors de la récupération des jeux en vente', error: error.message });
+    }
+};
+
 module.exports = {
     createGame,
     getAllGames,
@@ -241,7 +314,10 @@ module.exports = {
     getGamesBySeller,
     getAllDepositGames,
     getAllForSaleGames,
+    getAllSaleGames,
     sellGame,
     purchaseGame,
     getTotalDepositFeesBySession,
+    getAllForSaleGamesForIdUser,
+    getAllForSaleGamesForNonUser,
 };

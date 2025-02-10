@@ -60,13 +60,13 @@ db.sequelize = sequelize;
 
 db.users = require('./user.model')(sequelize, Sequelize);
 db.saleSession = require('./saleSession.model')(sequelize, Sequelize);
+db.temporarySeller = require('./temporarySeller.model')(sequelize, Sequelize);
 db.temporaryBuyer = require('./temporaryBuyer.model')(sequelize, Sequelize);
 db.game = require('./game.model')(sequelize, Sequelize);
 db.Csv = require('./fileCsv.model')(sequelize, Sequelize);
 db.wishlist = require('./wishlist.model')(sequelize, Sequelize);
 db.transaction = require('./transaction.model')(sequelize, Sequelize);
 db.particularFinancialSummary = require('./particularFinancialSummary.model')(sequelize, Sequelize);
-db.globalFinancialSummary = require('./globalFinancialSummary.model')(sequelize, Sequelize);
 
 db.users.belongsToMany(db.game, { through: 'Wishlist', foreignKey: 'userId' });
 db.game.belongsToMany(db.users, { through: 'Wishlist', foreignKey: 'gameId' });
@@ -85,5 +85,4 @@ module.exports = {
   Wishlist: db.wishlist,
   Transaction: db.transaction,
   ParticularFinancialSummary: db.particularFinancialSummary,
-  GlobalFinancialSummary: db.globalFinancialSummary,
 };

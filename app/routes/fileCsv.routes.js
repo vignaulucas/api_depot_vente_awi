@@ -7,6 +7,8 @@ module.exports = app => {
     const upload = multer({ dest: 'uploads/' });
 
     router.get('/get', isLoggedIn, csvController.getCsv);
+    router.get("/game/:ame", csvController.getGameDetailsByName);
+
     router.post('/post', isLoggedIn, isAdmin, upload.single('file'), csvController.importCsv);
 
     app.use('/csv', router);

@@ -3,6 +3,7 @@ const express = require('express');
 const { db } = require('./app/models');
 const cors = require('cors');
 const app = express();
+const sessionChecker = require("./app/sessionChecker")
 
 const init = require('./init');
 
@@ -37,9 +38,9 @@ require('./app/routes/fileCsv.routes')(app);
 require('./app/routes/wishlist.routes')(app);
 require('./app/routes/transaction.routes')(app);
 require('./app/routes/particularFinancialSummary.routes')(app);
-require('./app/routes/globalFinancialSummary.routes')(app);
 require('./app/routes/transaction.routes')(app);
 
+sessionChecker.closeExpiredSessions();
 
 const port = process.env.PORT || 8082;
 app.listen(port, () => {

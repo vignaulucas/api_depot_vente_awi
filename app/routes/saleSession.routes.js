@@ -5,7 +5,7 @@ module.exports = app => {
   const router = require('express').Router();
 
   // Routes GET
-  router.get('/sessions', isLoggedIn, isAdmin, controller.getAllSessions);
+  router.get('/sessions', isLoggedIn, controller.getAllSessions);
   router.get('/activeSession', controller.getActiveSession);
   router.get('/:id', controller.getSessionById);
 
