@@ -18,7 +18,7 @@ app.use(cors({
 app.use(express.json({ limit: '10mb' }));
 
 db.sequelize
-  .sync({force:true})
+  .sync()
   .then(async () => {
     console.log('Synced db.');
   })
