@@ -130,7 +130,6 @@ const getTransactionsBySession = async (req, res) => {
 };
 
 const getFinancialSummaryBySaleSessionId = async (req, res) => {
-    console.log(req.params);
     try {
         const { saleSessionId } = req.params;
         if (!saleSessionId) {
@@ -166,6 +165,33 @@ const getFinancialSummaryBySaleSessionId = async (req, res) => {
 };
 
 
+const getTotalDueToSeller = async (req, res) => {
+    try {
+        const { saleSessionId, idUser } = req.params;
+        if (!saleSessionId || !idUser) {
+            return res.status(400).send({ message: "Le saleSessionId et le idUser sont requis." });
+        }
+
+        const summary = await Transaction.findOne({
+            where: { saleSessionId, sellerId: idUser },
+            attributes: [
+                [sequelize.fn('SUM', sequelize.col('sellerEarnings')), 'totalDueToSeller']
+            ],
+            raw: true
+        });
+
+        const result = {
+            totalDueToSeller: summary?.totalDueToSeller ? Number(summary.totalDueToSeller) : 0
+        };
+
+        res.status(200).send(result);
+    } catch (error) {
+        console.error("Erreur lors du calcul des sommes dues au vendeur", error);
+        res.status(500).send({ message: "Erreur lors du calcul des sommes dues au vendeur", error: error.message });
+    }
+};
+
+
 module.exports = {
     createTransaction,
     getAllTransactions,
@@ -174,4 +200,5 @@ module.exports = {
     getTransactionsByBuyer,
     getTransactionsBySession,
     getFinancialSummaryBySaleSessionId,
+    getTotalDueToSeller,
 };

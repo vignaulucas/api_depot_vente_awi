@@ -42,6 +42,7 @@ const createTemporarySeller = async (req, res) => {
 
 // Récupérer tous les vendeurs temporaires
 const getAllTemporarySellers = async (req, res) => {
+    console.log("TemporarySeller object:", TemporarySeller); // Debugging
     try {
         const temporarySellers = await TemporarySeller.findAll();
         res.send(temporarySellers);
@@ -50,6 +51,7 @@ const getAllTemporarySellers = async (req, res) => {
         res.status(500).send({ message: 'Erreur lors de la récupération des vendeurs temporaires', error: error.message });
     }
 };
+
 
 // Récupérer un vendeur temporaire par ID
 const getTemporarySellerById = async (req, res) => {

@@ -24,5 +24,7 @@ module.exports = (app) => {
 
     router.get('/summary/:saleSessionId', isLoggedIn, isGestionnaire, controller.getFinancialSummaryBySaleSessionId);
 
+    router.get('/summary/:saleSessionId/:idUser', isLoggedIn, controller.getTotalDueToSeller);
+
     app.use('/transactions', router);
 };

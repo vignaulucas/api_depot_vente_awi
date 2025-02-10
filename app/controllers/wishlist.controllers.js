@@ -39,8 +39,8 @@ const getWishlist = async (req, res) => {
 // Supprimer un jeu de la wishlist
 const removeFromWishlist = async (req, res) => {
     const { gameId } = req.params;
-    const userId = req.user.id;
-
+    const userId = req.body.userId;
+    console.log("User ID:", userId, "Game ID:", gameId);
     try {
         const deleted = await Wishlist.destroy({
             where: { userId, gameId }
@@ -52,6 +52,7 @@ const removeFromWishlist = async (req, res) => {
 
         res.status(200).json({ message: 'Jeu supprimé de la wishlist.' });
     } catch (error) {
+        console.error("Erreur lors de la suppression :", error); // Ajout du log d'erreur
         res.status(500).json({ message: "Erreur lors de la suppression de la wishlist.", error: error.message });
     }
 };

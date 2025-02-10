@@ -2,6 +2,7 @@ const csv = require('csv-parser');
 const fs = require('fs');
 const db = require('../models');
 const Csv = db.Csv;
+const { Op } = require('sequelize');
 
 const importCsv = async (req, res) => {
     if (!req.file) {
@@ -72,6 +73,36 @@ const importCsv = async (req, res) => {
         });
 };
 
+const getGameDetailsByName = async (req, res) => {
+    try {
+        console.log(req.params)
+        const { gameName } = req.params;
+        console.log(gameName)
+        console.log("gameName")
+        if (!gameName) {
+            return res.status(400).send({ message: "Nom du jeu requis." });
+        }
+
+        const game = await Csv.findOne({
+            where: {
+                nameGame: {
+                    [Op.like]: `%${gameName}%`
+                }
+            }
+        });
+
+        if (!game) {
+            return res.status(404).send({ message: "Jeu non trouvé." });
+        }
+
+        res.send(game);
+    } catch (error) {
+        console.error("Erreur lors de la récupération du jeu :", error);
+        res.status(500).send({ message: "Erreur lors de la récupération du jeu", error: error.message });
+    }
+};
+
+
 // Fonction pour récupérer les données de la table Csv
 const getCsv = async (req, res) => {
     try {
@@ -84,4 +115,4 @@ const getCsv = async (req, res) => {
     }
 };
 
-module.exports = { importCsv, getCsv };
+module.exports = { importCsv, getCsv, getGameDetailsByName };

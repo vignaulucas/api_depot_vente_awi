@@ -8,9 +8,12 @@ module.exports = app => {
     router.get('/games', isLoggedIn, controller.getAllGames);
     router.get('/depositGames/:saleSessionId', isLoggedIn, isGestionnaire, controller.getAllDepositGames);
     router.get('/forSaleGames/:saleSessionId', controller.getAllForSaleGames);
+    router.get('/saleGames/:saleSessionId', controller.getAllSaleGames);
     router.get('/games/:id', isLoggedIn, controller.getGameById);
     router.get('/games/user/:userId', isLoggedIn, controller.getGamesBySeller);
     router.get('/totalDepositFees/:saleSessionId', isLoggedIn, isGestionnaire, controller.getTotalDepositFeesBySession);
+    router.get('/sellGames/:saleSessionId/:idUser', isLoggedIn, controller.getAllForSaleGamesForIdUser);
+    router.get('/sellGamesNonUser/:saleSessionId/:idUser', isLoggedIn, controller.getAllForSaleGamesForNonUser);
 
     // Routes POST
     router.post('/games', isLoggedIn, isGestionnaire, controller.createGame);
