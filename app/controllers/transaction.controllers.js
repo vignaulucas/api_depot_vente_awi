@@ -1,4 +1,4 @@
-const { Transaction, Game, User, TemporaryBuyer } = require('../models');
+const { Transaction, Game, User, TemporaryBuyer, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 // Créer une transaction
@@ -129,11 +129,49 @@ const getTransactionsBySession = async (req, res) => {
     }
 };
 
+const getFinancialSummaryBySaleSessionId = async (req, res) => {
+    console.log(req.params);
+    try {
+        const { saleSessionId } = req.params;
+        if (!saleSessionId) {
+            return res.status(400).send({ message: "Le saleSessionId est requis." });
+        }
+      
+        const summary = await Transaction.findOne({
+            where: { saleSessionId },
+            attributes: [
+                [sequelize.fn('SUM', sequelize.col('totalAmount')), 'totalTreasury'],
+                [sequelize.fn('SUM', sequelize.col('commissionAmount')), 'totalCommission'],
+                [sequelize.fn('SUM', sequelize.col('sellerEarnings')), 'totalDueToSellers']
+            ],
+            raw: true
+        });
+  
+        // Vérification avant d'accéder aux propriétés
+        if (!summary) {
+            return res.status(404).send({ message: "Aucune transaction trouvée pour cette session." });
+        }
+  
+        const result = {
+          totalTreasury: summary.totalTreasury ? Number(summary.totalTreasury) : 0,
+          totalCommission: summary.totalCommission ? Number(summary.totalCommission) : 0,
+          totalDueToSellers: summary.totalDueToSellers ? Number(summary.totalDueToSellers) : 0
+        };
+  
+        res.status(200).send(result);
+    } catch (error) {
+        console.error("Erreur lors du calcul du résumé financier", error);
+        res.status(500).send({ message: "Erreur lors du calcul du résumé financier", error: error.message });
+    }
+};
+
+
 module.exports = {
     createTransaction,
     getAllTransactions,
     getTransactionById,
     getTransactionsBySeller,
     getTransactionsByBuyer,
-    getTransactionsBySession
+    getTransactionsBySession,
+    getFinancialSummaryBySaleSessionId,
 };

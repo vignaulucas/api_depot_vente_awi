@@ -1,10 +1,10 @@
-const { Game, TemporarySeller, SaleSession, User } = require('../models');
+const { Game, TemporarySeller, SaleSession, User, sequelize } = require('../models');
 const { Op } = require('sequelize');
 
 // Créer un nouveau jeu et l'associer à un vendeur temporaire ou un utilisateur existant
 const createGame = async (req, res) => {
     console.log(req.body);
-    const { name, publisher, price, uniqueIdentifier, status, saleSessionId, sellerId, userId } = req.body;
+    const { name, publisher, price, uniqueIdentifier, status, saleSessionId, sellerId, userId, depositFee } = req.body;
 
     try {
         if (!userId && !sellerId) {
@@ -18,8 +18,9 @@ const createGame = async (req, res) => {
             uniqueIdentifier,
             status,
             saleSessionId,
-            sellerId: sellerId || null, // Ajoute `sellerId` pour le temporary seller
-            userId: userId || null,     // Ajoute `userId` pour l'utilisateur existant
+            sellerId: sellerId || null,
+            userId: userId || null,
+            depositFee,
         });
 
         res.status(201).send(game);
@@ -204,6 +205,33 @@ const sellGame = async (req, res) => {
     }
 };
 
+const getTotalDepositFeesBySession = async (req, res) => {
+    const { saleSessionId } = req.params;
+    if (!saleSessionId) {
+        return res.status(400).send({ message: "Le saleSessionId est requis." });
+    }
+    
+    try {
+        // On effectue une agrégation sur la colonne depositFee de la table Game pour la session donnée
+        const summary = await Game.findOne({
+            where: { saleSessionId },
+            attributes: [
+                [sequelize.fn('SUM', sequelize.col('depositFee')), 'totalDepositFees']
+            ],
+            raw: true
+        });
+
+        if (!summary || summary.totalDepositFees === null) {
+            return res.status(404).send({ message: "Aucun jeu trouvé pour cette session." });
+        }
+
+        res.status(200).send(summary);
+    } catch (error) {
+        console.error("Erreur lors du calcul des frais de dépôt totaux", error);
+        res.status(500).send({ message: "Erreur lors du calcul des frais de dépôt totaux", error: error.message });
+    }
+};
+
 module.exports = {
     createGame,
     getAllGames,
@@ -215,4 +243,5 @@ module.exports = {
     getAllForSaleGames,
     sellGame,
     purchaseGame,
+    getTotalDepositFeesBySession,
 };
