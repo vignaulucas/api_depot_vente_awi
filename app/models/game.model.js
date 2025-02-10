@@ -55,6 +55,13 @@ module.exports = (sequelize, Sequelize) => {
                 key: 'idUser',
             },
         },
+        depositFee: {
+            type: Sequelize.DECIMAL(10, 2),
+            allowNull: false,
+            validate: {
+                min: 0,
+            },
+        },
         saleSessionId: {
             type: Sequelize.INTEGER,
             allowNull: false,

@@ -75,6 +75,7 @@ db.game.belongsToMany(db.users, { through: 'Wishlist', foreignKey: 'gameId' });
 
 module.exports = {
   db,
+  sequelize: db.sequelize,
   User: db.users,
   SaleSession: db.saleSession,
   Game: db.game,

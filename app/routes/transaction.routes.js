@@ -22,5 +22,7 @@ module.exports = (app) => {
     // Route pour récupérer toutes les transactions d'une session de vente
     router.get('/session/:saleSessionId', isLoggedIn, isGestionnaire, controller.getTransactionsBySession);
 
+    router.get('/summary/:saleSessionId', isLoggedIn, isGestionnaire, controller.getFinancialSummaryBySaleSessionId);
+
     app.use('/transactions', router);
 };
