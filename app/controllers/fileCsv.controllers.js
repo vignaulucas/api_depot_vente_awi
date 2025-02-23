@@ -79,7 +79,7 @@ const getGameDetailsByName = async (req, res) => {
         const { name } = req.params;
         console.log(name)
         console.log("name")
-        if (!gameName) {
+        if (!name) {
             return res.status(400).send({ message: "Nom du jeu requis." });
         }
 
