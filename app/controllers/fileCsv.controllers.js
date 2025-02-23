@@ -76,9 +76,9 @@ const importCsv = async (req, res) => {
 const getGameDetailsByName = async (req, res) => {
     try {
         console.log(req.params)
-        const { gameName } = req.params;
-        console.log(gameName)
-        console.log("gameName")
+        const { name } = req.params;
+        console.log(name)
+        console.log("name")
         if (!gameName) {
             return res.status(400).send({ message: "Nom du jeu requis." });
         }
@@ -86,7 +86,7 @@ const getGameDetailsByName = async (req, res) => {
         const game = await Csv.findOne({
             where: {
                 nameGame: {
-                    [Op.like]: `%${gameName}%`
+                    [Op.like]: `%${name}%`
                 }
             }
         });
